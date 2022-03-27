@@ -4,4 +4,6 @@
     <string name="screen_deafult_name">Default</string>
     <string name="screen_home">Home</string>
     <string name="screen_setting">Setting</string>
+    <string name="new_reminder_welcome">Welcome</string>
+    <string name="new_reminder_add_new_reminder">Add a New\nReminder</string>
 </resources>
