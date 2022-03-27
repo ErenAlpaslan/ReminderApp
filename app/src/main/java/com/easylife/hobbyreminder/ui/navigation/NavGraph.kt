@@ -34,7 +34,13 @@ fun NavGraph(navController: NavHostController) {
         }
 
         composable(Screen.Setting.route) {
-            get< SettingScreen>().Create(
+            get<SettingScreen>().Create(
+                viewModel = getViewModel(),
+                navController = navController)
+        }
+
+        composable(Screen.NewReminder.route) {
+            get<NewReminderScreen>().Create(
                 viewModel = getViewModel(),
                 navController = navController)
         }
