@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">HobbyReminder</string>
+
+    <string name="screen_deafult_name">Default</string>
+    <string name="screen_home">Home</string>
+    <string name="screen_setting">Setting</string>
 </resources>

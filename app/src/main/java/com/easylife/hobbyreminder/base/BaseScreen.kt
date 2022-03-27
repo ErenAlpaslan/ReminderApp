@@ -13,7 +13,7 @@ abstract class BaseScreen<VM: BaseViewModel>: KoinComponent {
     protected lateinit var navController: NavController
 
     @Composable
-    fun Screen(viewModel: VM, navController: NavController) {
+    fun Create(viewModel: VM, navController: NavController) {
         this.viewModel = viewModel
         this.navController = navController
 

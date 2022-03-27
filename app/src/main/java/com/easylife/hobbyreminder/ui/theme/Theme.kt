@@ -50,6 +50,7 @@ fun HobbyReminderTheme(
     MaterialTheme(
         colors = colorScheme,
         typography = Typography,
-        content = content
+        content = content,
+        shapes = Shapes
     )
 }

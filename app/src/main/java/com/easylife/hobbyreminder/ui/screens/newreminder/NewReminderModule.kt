@@ -5,4 +5,5 @@ import org.koin.dsl.module
 
 val newReminderModule = module {
     viewModel { NewReminderViewModel() }
+    single { NewReminderScreen() }
 }
