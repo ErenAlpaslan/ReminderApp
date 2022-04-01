@@ -82,14 +82,6 @@ fun BottomNavItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        /*Image(
-            imageVector = icon,
-            contentDescription = "icon",
-            colorFilter = ColorFilter.tint(
-                if (selected) selectedColor else unselectedColor
-            ),
-            modifier = Modifier.size(24.dp)
-        )*/
         Text(
             text = stringResource(id = label),
             color = if (selected) selectedColor else unselectedColor
