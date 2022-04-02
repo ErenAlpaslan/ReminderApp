@@ -15,6 +15,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.FocusState
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -55,6 +57,7 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
                             coroutineScope.launch {
                                 if (themeSelectionBottomSheetState.bottomSheetState.isCollapsed) {
                                     themeSelectionBottomSheetState.bottomSheetState.expand()
+                                    focusManager.clearFocus()
                                 }else {
                                     themeSelectionBottomSheetState.bottomSheetState.collapse()
                                 }
@@ -63,7 +66,9 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
                         Spacer(modifier = Modifier.height(44.dp))
                         ReminderTitle()
                         Spacer(modifier = Modifier.height(10.dp))
-                        SettingReminder()
+                        SettingReminder {
+                            /* TODO: Open dialog */
+                        }
                         SaveButton()
                     }
                 }
@@ -148,7 +153,9 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
     }
 
     @Composable
-    fun SettingReminder() {
+    fun SettingReminder(
+        onClick: () -> Unit
+    ) {
         Row(
             modifier = Modifier
                 .padding(vertical = 1.dp, horizontal = 16.dp)
@@ -164,7 +171,7 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
                     .background(colorResource(id = android.R.color.transparent))
                     .fillMaxWidth()
                     .clickable {
-                        /* TODO navigate user to reminder dialog */
+                        onClick()
                     },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     backgroundColor = LightBlue,
