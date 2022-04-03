@@ -3,6 +3,7 @@ package com.easylife.hobbyreminder
 import android.app.Application
 import com.easylife.hobbyreminder.common.appModule
 import com.easylife.hobbyreminder.common.persistence.roomModule
+import com.easylife.hobbyreminder.ui.repository.repositoryModule
 import com.easylife.hobbyreminder.ui.screens.home.homeModule
 import com.easylife.hobbyreminder.ui.screens.newreminder.newReminderModule
 import com.easylife.hobbyreminder.ui.screens.setting.settingModule
@@ -15,10 +16,11 @@ class HobbyReminderApplication: Application() {
     private val moduleList = listOf(
         appModule,
         roomModule,
+        repositoryModule,
         splashModule,
         homeModule,
         newReminderModule,
-        settingModule
+        settingModule,
     )
 
     override fun onCreate() {

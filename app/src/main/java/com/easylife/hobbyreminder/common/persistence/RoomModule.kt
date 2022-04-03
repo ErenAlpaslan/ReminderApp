@@ -7,16 +7,16 @@ import org.koin.dsl.module
 
 val roomModule = module {
     single { Gson() }
+    single { get<AppDatabase>().reminderDao() }
+    single { get<AppDatabase>().themeDao() }
     single {
         Room.databaseBuilder(
             androidApplication(),
             AppDatabase::class.java,
             "Reminder.db")
             .fallbackToDestructiveMigration()
-            //.addCallback(RoomCallback)
+            .addCallback(RoomCallback)
             //.addTypeConverter(get<RecordListTypeConverter>())
             .build()
     }
-    single { get<AppDatabase>().reminderDao() }
-    single { get<AppDatabase>().themeDao() }
 }

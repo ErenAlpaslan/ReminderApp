@@ -11,6 +11,7 @@ import androidx.compose.material.icons.rounded.ColorLens
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.easylife.hobbyreminder.R
 import com.easylife.hobbyreminder.base.BaseScreen
+import com.easylife.hobbyreminder.entity.ThemeEntity
 import com.easylife.hobbyreminder.ui.navigation.Screen
 import com.easylife.hobbyreminder.ui.theme.*
 import com.easylife.hobbyreminder.ui.widget.ThemeSelectionBottomSheet
@@ -40,14 +42,20 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
         )
         val coroutineScope = rememberCoroutineScope()
 
+        viewModel.getThemes()
+        val themes by viewModel.themes.observeAsState()
+
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             content = {
-                ThemeSelectionBottomSheet(bottomSheetState = themeSelectionBottomSheetState) {
+                ThemeSelectionBottomSheet(
+                    bottomSheetState = themeSelectionBottomSheetState,
+                    list = themes
+                ) {
                     Column (
                         modifier = Modifier
                             .fillMaxSize()
-                            .nestedScroll(object: NestedScrollConnection{
+                            .nestedScroll(object : NestedScrollConnection {
 
                             })
 
@@ -161,7 +169,7 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
                 .padding(vertical = 1.dp, horizontal = 16.dp)
                 .fillMaxWidth()
                 .clickable {
-                       //TODO: Open reminder dialog
+                    //TODO: Open reminder dialog
                 },
         ) {
             TextField(value = "",

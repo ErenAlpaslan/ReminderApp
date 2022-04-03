@@ -9,8 +9,8 @@ import kotlinx.coroutines.launch
 
 open class BaseViewModel: ViewModel() {
 
-    protected val _error: MutableLiveData<GeneralError?> = MutableLiveData()
-    val error: LiveData<GeneralError?> = _error
+    protected val _error: MutableLiveData<String?> = MutableLiveData()
+    val error: LiveData<String?> = _error
 
     protected val _showProgress: MutableLiveData<Boolean> = MutableLiveData()
     val showProgress: LiveData<Boolean> = _showProgress

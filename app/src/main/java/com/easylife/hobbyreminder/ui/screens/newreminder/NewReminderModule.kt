@@ -4,6 +4,6 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val newReminderModule = module {
-    viewModel { NewReminderViewModel() }
+    viewModel { NewReminderViewModel(get()) }
     single { NewReminderScreen() }
 }
