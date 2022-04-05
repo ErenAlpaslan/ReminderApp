@@ -57,14 +57,6 @@ fun DaySelector() {
         15.dp.toPx()
     }
 
-    var isStart = remember {
-        mutableStateOf(false)
-    }
-
-    val size = remember {
-        mutableStateOf(Size(0f, 0f))
-    }
-
     Column(
         modifier = Modifier
             .height(30.dp)
@@ -78,10 +70,10 @@ fun DaySelector() {
                         .fillMaxSize()
                         .padding(vertical = 2.dp),
                     onDraw = {
-                        size.value = this.size
-                        val width = size.value.width
+
+                        val width = size.width
                         val multiplier = width / 7
-                        val height = size.value.height
+                        val height = size.height
 
                         if (startDate.value <= endDate.value) {
                             val startOffset =
@@ -110,7 +102,7 @@ fun DaySelector() {
                                 )
                                 val startReact =
                                     Offset(((startDate.value) * multiplier) + (offset * 2), height / 2)
-                                val endReact = Offset((7 * multiplier) - (offset / 2), height / 2)
+                                val endReact = Offset((7 * multiplier) + offset, height / 2)
                                 drawLine(
                                     color = Orange,
                                     start = startReact,
@@ -118,7 +110,7 @@ fun DaySelector() {
                                     strokeWidth = height,
                                     cap = StrokeCap.Square
                                 )
-                                val startReactLeft = Offset((0 * multiplier) + (offset / 2), height / 2)
+                                val startReactLeft = Offset((0 * multiplier) - offset, height / 2)
                                 val endReactLeft =
                                     Offset(((endDate.value + 1) * multiplier) - (offset * 2), height / 2)
                                 drawLine(
@@ -151,7 +143,7 @@ fun DaySelector() {
                     .fillMaxWidth()
                     .pointerInput(Unit) {
                         detectTapGestures {
-                            val point = clickedPoint(it, size.value.width)
+                            val point = clickedPoint(it, size.width)
                             handleTap(
                                 point = point,
                                 start = startDate.value,
@@ -217,7 +209,7 @@ fun DayItem(
     }
 }
 
-fun clickedPoint(offset: Offset, width: Float): Int {
+fun clickedPoint(offset: Offset, width: Int): Int {
     return (7 * offset.x / width).toInt()
 }
 
