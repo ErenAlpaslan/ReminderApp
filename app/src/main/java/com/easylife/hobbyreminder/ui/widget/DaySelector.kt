@@ -164,32 +164,6 @@ fun DaySelector() {
                 modifier = Modifier
                     .height(30.dp)
                     .fillMaxWidth()
-                    .pointerInput(Unit) {
-                        /*detectTapGestures {
-                            Log.d("onDrag", "==> on tap")
-                            val point = clickedPoint(it, size.width)
-                            handleTap(
-                                point = point,
-                                start = startDate.value,
-                                end = endDate.value,
-                                onStartChanged = { start ->
-                                    startDate.value = start
-                                },
-                                onEndChanged = { end ->
-                                    endDate.value = end
-                                },
-                                onClear = {
-                                    startDate.value = -1
-                                    endDate.value = -1
-                                }
-                            )
-                        }*/
-                    }
-                    .pointerInput(Unit) {
-                        detectTapGestures {
-                            Log.d("ActionControl", "==> ")
-                        }
-                    }
                     .pointerInteropFilter { motion ->
                         when (motion.action) {
                             MotionEvent.ACTION_DOWN -> {
@@ -207,10 +181,6 @@ fun DaySelector() {
                                     },
                                     onEndChanged = { end ->
                                         endDate.value = end
-                                    },
-                                    onClear = {
-                                        startDate.value = -1
-                                        endDate.value = -1
                                     }
                                 )
                             }
@@ -220,7 +190,7 @@ fun DaySelector() {
                                     canvasSize.value.width
                                 )
 
-                                if (isStart.value) {
+                                if (isStart.value && point != endDate.value) {
                                     startDate.value = point
                                 }else {
                                     if (point != startDate.value) {
@@ -289,14 +259,11 @@ fun handleTap(
     end: Int,
     onStartChanged: (Int) -> Unit,
     onEndChanged: (Int) -> Unit,
-    onClear: () -> Unit
 ) {
     if (start == -1) {
         onStartChanged(point)
     } else if (start != point && end != point) {
         onEndChanged(point)
-    } else if (point == start) {
-        onClear()
     }
 }
 
