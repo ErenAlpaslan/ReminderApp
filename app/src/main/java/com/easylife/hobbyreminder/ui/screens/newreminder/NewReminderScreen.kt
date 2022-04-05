@@ -1,5 +1,6 @@
 package com.easylife.hobbyreminder.ui.screens.newreminder
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,11 +25,13 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import com.easylife.hobbyreminder.R
 import com.easylife.hobbyreminder.base.BaseScreen
 import com.easylife.hobbyreminder.entity.ThemeEntity
 import com.easylife.hobbyreminder.ui.navigation.Screen
 import com.easylife.hobbyreminder.ui.theme.*
+import com.easylife.hobbyreminder.ui.widget.ReminderDialog
 import com.easylife.hobbyreminder.ui.widget.ThemeSelectionBottomSheet
 import kotlinx.coroutines.launch
 
@@ -45,6 +48,10 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
         viewModel.getThemes()
         val themes by viewModel.themes.observeAsState()
 
+        val dialogState = remember {
+            mutableStateOf(false)
+        }
+
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             content = {
@@ -52,21 +59,21 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
                     bottomSheetState = themeSelectionBottomSheetState,
                     list = themes
                 ) {
-                    Column (
+                    Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .nestedScroll(object : NestedScrollConnection {
 
                             })
 
-                    ){
+                    ) {
                         Spacer(modifier = Modifier.height(24.dp))
                         Header {
                             coroutineScope.launch {
                                 if (themeSelectionBottomSheetState.bottomSheetState.isCollapsed) {
                                     themeSelectionBottomSheetState.bottomSheetState.expand()
                                     focusManager.clearFocus()
-                                }else {
+                                } else {
                                     themeSelectionBottomSheetState.bottomSheetState.collapse()
                                 }
                             }
@@ -75,13 +82,27 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
                         ReminderTitle()
                         Spacer(modifier = Modifier.height(10.dp))
                         SettingReminder {
-                            /* TODO: Open dialog */
+                            Log.d("ReminderControl", "open dialog")
+                            dialogState.value = true
                         }
                         SaveButton()
                     }
                 }
             },
         )
+
+
+        if (dialogState.value) {
+            Log.d("ReminderControl", "open dialog => true")
+            Dialog(onDismissRequest = {
+                dialogState.value = false
+            }) {
+                ReminderDialog(
+                    title = "Photography",
+                    dialogState = dialogState,
+                )
+            }
+        }
     }
 
     @Composable
@@ -104,7 +125,7 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
                 )
                 Button(
                     onClick = {
-                              onThemeSelection()
+                        onThemeSelection()
                     },
                     modifier = Modifier.padding(8.dp),
                     shape = MaterialTheme.shapes.small,
@@ -122,19 +143,21 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
             )
         }
     }
-    
+
     @Composable
     fun ReminderTitle() {
         val title = remember {
             mutableStateOf("")
         }
-        
+
         Row(
             modifier = Modifier
                 .padding(vertical = 1.dp, horizontal = 16.dp)
+                .height(60.dp)
                 .fillMaxWidth(),
         ) {
-            TextField(value = title.value,
+            TextField(
+                value = title.value,
                 onValueChange = {
                     title.value = it
                     viewModel.onTitleChanged(it)
@@ -146,7 +169,8 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
                     backgroundColor = LightBlue,
                     cursorColor = Black,
                     focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent),
+                    unfocusedBorderColor = Color.Transparent
+                ),
                 textStyle = MaterialTheme.typography.body1,
                 placeholder = {
                     Text(
@@ -164,23 +188,19 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
     fun SettingReminder(
         onClick: () -> Unit
     ) {
-        Row(
+        Box(
             modifier = Modifier
                 .padding(vertical = 1.dp, horizontal = 16.dp)
-                .fillMaxWidth()
-                .clickable {
-                    //TODO: Open reminder dialog
-                },
+                .height(60.dp)
+                .fillMaxWidth(),
         ) {
-            TextField(value = "",
+            TextField(
+                value = "",
                 onValueChange = {
                 },
                 modifier = Modifier
                     .background(colorResource(id = android.R.color.transparent))
-                    .fillMaxWidth()
-                    .clickable {
-                        onClick()
-                    },
+                    .fillMaxWidth(),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     backgroundColor = LightBlue,
                     cursorColor = Black,
@@ -200,8 +220,14 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
                 readOnly = true,
                 trailingIcon = {
                     Icon(imageVector = Icons.Rounded.Notifications, contentDescription = "icon")
-                }
+                },
             )
+            Box(modifier = Modifier.fillMaxSize()
+                .clickable {
+                    Log.d("ReminderControl", "onClick")
+                    onClick()
+                }) {
+            }
         }
     }
 

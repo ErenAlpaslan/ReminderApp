@@ -10,3 +10,5 @@ val White = Color(0xFFFFFFFF)
 val LightBlue = Color(0xFFF2F3F7)
 val LightPurple = Color(0x4D5E27AD)
 val TransparentBackground = Color(0x4A050505)
+val TransparentOrange = Color(0x65F4845F)
+
