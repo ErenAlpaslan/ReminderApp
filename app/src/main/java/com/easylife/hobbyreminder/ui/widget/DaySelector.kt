@@ -7,6 +7,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -32,8 +33,10 @@ import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.pointerInteropFilter
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.core.view.MotionEventCompat
 import androidx.lifecycle.MutableLiveData
@@ -57,20 +60,31 @@ fun DaySelector() {
         15.dp.toPx()
     }
 
+    val isStart = remember {
+        mutableStateOf(false)
+    }
+
+    val canvasSize = remember{
+        mutableStateOf(IntSize(0, 0))
+    }
+
     Column(
         modifier = Modifier
             .height(30.dp)
             .fillMaxWidth(),
         verticalArrangement = Arrangement.Center
     ) {
-        Box {
+        Box(
+            modifier = Modifier.onSizeChanged {
+                canvasSize.value = it
+            }
+        ) {
             if (startDate.value != -1) {
                 Canvas(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(vertical = 2.dp),
                     onDraw = {
-
                         val width = size.width
                         val multiplier = width / 7
                         val height = size.height
@@ -101,7 +115,10 @@ fun DaySelector() {
                                     cap = StrokeCap.Round
                                 )
                                 val startReact =
-                                    Offset(((startDate.value) * multiplier) + (offset * 2), height / 2)
+                                    Offset(
+                                        ((startDate.value) * multiplier) + (offset * 2),
+                                        height / 2
+                                    )
                                 val endReact = Offset((7 * multiplier) + offset, height / 2)
                                 drawLine(
                                     color = Orange,
@@ -112,7 +129,10 @@ fun DaySelector() {
                                 )
                                 val startReactLeft = Offset((0 * multiplier) - offset, height / 2)
                                 val endReactLeft =
-                                    Offset(((endDate.value + 1) * multiplier) - (offset * 2), height / 2)
+                                    Offset(
+                                        ((endDate.value + 1) * multiplier) - (offset * 2),
+                                        height / 2
+                                    )
                                 drawLine(
                                     color = Orange,
                                     start = startReactLeft,
@@ -123,7 +143,10 @@ fun DaySelector() {
                                 val startRoundedLeft =
                                     Offset((endDate.value * multiplier) - offset, height / 2)
                                 val endRoundedLeft =
-                                    Offset(((endDate.value) * multiplier) + (offset * 2), height / 2)
+                                    Offset(
+                                        ((endDate.value) * multiplier) + (offset * 2),
+                                        height / 2
+                                    )
                                 drawLine(
                                     color = Orange,
                                     start = startRoundedLeft,
@@ -142,7 +165,8 @@ fun DaySelector() {
                     .height(30.dp)
                     .fillMaxWidth()
                     .pointerInput(Unit) {
-                        detectTapGestures {
+                        /*detectTapGestures {
+                            Log.d("onDrag", "==> on tap")
                             val point = clickedPoint(it, size.width)
                             handleTap(
                                 point = point,
@@ -159,7 +183,53 @@ fun DaySelector() {
                                     endDate.value = -1
                                 }
                             )
+                        }*/
+                    }
+                    .pointerInput(Unit) {
+                        detectTapGestures {
+                            Log.d("ActionControl", "==> ")
                         }
+                    }
+                    .pointerInteropFilter { motion ->
+                        when (motion.action) {
+                            MotionEvent.ACTION_DOWN -> {
+                                val point = clickedPoint(
+                                    Offset(motion.x, motion.y),
+                                    canvasSize.value.width.toInt()
+                                )
+                                isStart.value = point == startDate.value
+                                handleTap(
+                                    point = point,
+                                    start = startDate.value,
+                                    end = endDate.value,
+                                    onStartChanged = { start ->
+                                        startDate.value = start
+                                    },
+                                    onEndChanged = { end ->
+                                        endDate.value = end
+                                    },
+                                    onClear = {
+                                        startDate.value = -1
+                                        endDate.value = -1
+                                    }
+                                )
+                            }
+                            MotionEvent.ACTION_MOVE -> {
+                                val point = clickedPoint(
+                                    Offset(motion.x, motion.y),
+                                    canvasSize.value.width
+                                )
+
+                                if (isStart.value) {
+                                    startDate.value = point
+                                }else {
+                                    if (point != startDate.value) {
+                                        endDate.value = point
+                                    }
+                                }
+                            }
+                        }
+                        true
                     },
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
@@ -223,9 +293,9 @@ fun handleTap(
 ) {
     if (start == -1) {
         onStartChanged(point)
-    }else if (start != point && end != point) {
+    } else if (start != point && end != point) {
         onEndChanged(point)
-    }else if (point == start) {
+    } else if (point == start) {
         onClear()
     }
 }
