@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -17,6 +18,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
@@ -123,16 +125,10 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
                     style = MaterialTheme.typography.body2,
                     color = Gray
                 )
-                Button(
-                    onClick = {
-                        onThemeSelection()
-                    },
-                    modifier = Modifier.padding(8.dp),
-                    shape = MaterialTheme.shapes.small,
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Orange,
-                        contentColor = White
-                    )
+                IconButton(
+                    onClick = { onThemeSelection() },
+                    modifier = Modifier.clip(RoundedCornerShape(8.dp))
+                        .background(Orange),
                 ) {
                     Icon(imageVector = Icons.Rounded.ColorLens, contentDescription = "icon")
                 }
@@ -222,7 +218,8 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
                     Icon(imageVector = Icons.Rounded.Notifications, contentDescription = "icon")
                 },
             )
-            Box(modifier = Modifier.fillMaxSize()
+            Box(modifier = Modifier
+                .fillMaxSize()
                 .clickable {
                     Log.d("ReminderControl", "onClick")
                     onClick()

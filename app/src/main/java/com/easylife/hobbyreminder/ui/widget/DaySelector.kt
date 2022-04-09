@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.MotionEventCompat
 import androidx.lifecycle.MutableLiveData
 import com.easylife.hobbyreminder.R
+import com.easylife.hobbyreminder.entity.Day
 import com.easylife.hobbyreminder.ui.theme.Black
 import com.easylife.hobbyreminder.ui.theme.Orange
 import com.easylife.hobbyreminder.ui.theme.TransparentOrange
@@ -64,8 +65,22 @@ fun DaySelector() {
         mutableStateOf(false)
     }
 
-    val canvasSize = remember{
+    val canvasSize = remember {
         mutableStateOf(IntSize(0, 0))
+    }
+
+    val days = remember {
+        mutableStateOf(
+            listOf(
+                Day(0, R.string.reminder_dialog_monday, false),
+                Day(1, R.string.reminder_dialog_thursday, false),
+                Day(2, R.string.reminder_dialog_wednesday, false),
+                Day(3, R.string.reminder_dialog_thuesday, false),
+                Day(4, R.string.reminder_dialog_friday, false),
+                Day(5, R.string.reminder_dialog_saturday, false),
+                Day(6, R.string.reminder_dialog_sunday, false),
+            )
+        )
     }
 
     Column(
@@ -190,11 +205,15 @@ fun DaySelector() {
                                     canvasSize.value.width
                                 )
 
-                                if (isStart.value && point != endDate.value) {
-                                    startDate.value = point
-                                }else {
-                                    if (point != startDate.value) {
-                                        endDate.value = point
+                                if (point in 0..6) {
+                                    if (isStart.value &&
+                                        point != endDate.value
+                                            ) {
+                                        startDate.value = point
+                                    } else {
+                                        if (point != startDate.value) {
+                                            endDate.value = point
+                                        }
                                     }
                                 }
                             }
@@ -205,19 +224,13 @@ fun DaySelector() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 itemsIndexed(
-                    listOf(
-                        R.string.reminder_dialog_monday,
-                        R.string.reminder_dialog_thursday,
-                        R.string.reminder_dialog_wednesday,
-                        R.string.reminder_dialog_thuesday,
-                        R.string.reminder_dialog_friday,
-                        R.string.reminder_dialog_saturday,
-                        R.string.reminder_dialog_sunday
-                    )
-                ) { index, item ->
+                    days.value
+                ) { index, day ->
+                    val selected = inBetween(index, startDate.value, endDate.value, 7)
+                    days.value.get(index).selected = selected
                     DayItem(
-                        selected = inBetween(index, startDate.value, endDate.value, 7),
-                        text = item,
+                        selected = selected,
+                        text = day.shortCode,
                     )
                 }
             }

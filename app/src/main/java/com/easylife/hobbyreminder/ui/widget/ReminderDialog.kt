@@ -46,6 +46,7 @@ fun ReminderDialog(
             )
             Spacer(modifier = Modifier.height(50.dp))
             DaySelector()
+            Spacer(modifier = Modifier.height(30.dp))
             Box(
                 modifier = Modifier
                     .height(1.dp)
@@ -53,7 +54,17 @@ fun ReminderDialog(
                     .fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(30.dp))
-            HoursPicker()
+            HoursPicker(
+                hours = {
+
+                },
+                minutes = {
+
+                },
+                timePeriod = {
+
+                }
+            )
             Spacer(modifier = Modifier.height(30.dp))
             Box(
                 modifier = Modifier
@@ -73,11 +84,6 @@ fun ReminderDialog(
             )
         }
     }
-}
-
-@Composable
-fun HoursPicker() {
-    // TODO: Hours Picker
 }
 
 @Composable
