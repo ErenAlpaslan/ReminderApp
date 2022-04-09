@@ -49,7 +49,9 @@ import com.easylife.hobbyreminder.ui.theme.White
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun DaySelector() {
+fun DaySelector(
+    selectedDays: (List<Day>) -> Unit
+) {
     val startDate = remember {
         mutableStateOf(-1)
     }
@@ -75,7 +77,7 @@ fun DaySelector() {
                 Day(0, R.string.reminder_dialog_monday, false),
                 Day(1, R.string.reminder_dialog_thursday, false),
                 Day(2, R.string.reminder_dialog_wednesday, false),
-                Day(3, R.string.reminder_dialog_thuesday, false),
+                Day(3, R.string.reminder_dialog_tuesday, false),
                 Day(4, R.string.reminder_dialog_friday, false),
                 Day(5, R.string.reminder_dialog_saturday, false),
                 Day(6, R.string.reminder_dialog_sunday, false),
@@ -228,6 +230,7 @@ fun DaySelector() {
                 ) { index, day ->
                     val selected = inBetween(index, startDate.value, endDate.value, 7)
                     days.value.get(index).selected = selected
+                    selectedDays(days.value.filter { it.selected })
                     DayItem(
                         selected = selected,
                         text = day.shortCode,

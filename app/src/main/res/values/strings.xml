@@ -8,6 +8,7 @@
     <string name="new_reminder_add_new_reminder">Add a New\nReminder</string>
     <string name="new_reminder_title_placeholder">Reminder title</string>
     <string name="new_reminder_set_reminder_placeholder">Set Reminder</string>
+    <string name="new_reminder_update_reminder_placeholder">Update Reminder</string>
     <string name="new_reminder_save_text">Save</string>
 
     <string name="reminder_dialog_title">Set Reminder for</string>
@@ -20,9 +21,13 @@
     <string name="reminder_dialog_monday">M</string>
     <string name="reminder_dialog_thursday">T</string>
     <string name="reminder_dialog_wednesday">W</string>
-    <string name="reminder_dialog_thuesday">T</string>
+    <string name="reminder_dialog_tuesday">T</string>
     <string name="reminder_dialog_friday">F</string>
     <string name="reminder_dialog_saturday">S</string>
     <string name="reminder_dialog_sunday">S</string>
+    <string name="reminder_not_selected_day_error_message">Please select days</string>
+
+    <string name="button_ok">Okay</string>
+    <string name="button_cancel">Cancel</string>
 
 </resources>

@@ -54,6 +54,10 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
             mutableStateOf(false)
         }
 
+        val isSaveEnabled by viewModel.isSaveEnabled.observeAsState()
+        val isReminderSettingUp by viewModel.isReminderSettingUp.observeAsState()
+        val title by viewModel.title.observeAsState()
+
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             content = {
@@ -83,11 +87,12 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
                         Spacer(modifier = Modifier.height(44.dp))
                         ReminderTitle()
                         Spacer(modifier = Modifier.height(10.dp))
-                        SettingReminder {
-                            Log.d("ReminderControl", "open dialog")
+                        SettingReminder(
+                            isSet = isReminderSettingUp ?: false
+                        ) {
                             dialogState.value = true
                         }
-                        SaveButton()
+                        SaveButton(enabled = isSaveEnabled)
                     }
                 }
             },
@@ -95,14 +100,15 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
 
 
         if (dialogState.value) {
-            Log.d("ReminderControl", "open dialog => true")
             Dialog(onDismissRequest = {
                 dialogState.value = false
             }) {
                 ReminderDialog(
-                    title = "Photography",
+                    title = title ?: "",
                     dialogState = dialogState,
-                )
+                ) {
+                    viewModel.onReminderConfigChanged(it)
+                }
             }
         }
     }
@@ -127,7 +133,8 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
                 )
                 IconButton(
                     onClick = { onThemeSelection() },
-                    modifier = Modifier.clip(RoundedCornerShape(8.dp))
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
                         .background(Orange),
                 ) {
                     Icon(imageVector = Icons.Rounded.ColorLens, contentDescription = "icon")
@@ -182,6 +189,7 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
 
     @Composable
     fun SettingReminder(
+        isSet: Boolean,
         onClick: () -> Unit
     ) {
         Box(
@@ -207,7 +215,10 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
                 textStyle = MaterialTheme.typography.body1,
                 placeholder = {
                     Text(
-                        text = stringResource(id = R.string.new_reminder_set_reminder_placeholder),
+                        text = if (!isSet)
+                            stringResource(id = R.string.new_reminder_set_reminder_placeholder)
+                        else
+                            stringResource(id = R.string.new_reminder_update_reminder_placeholder),
                         color = Color.Gray,
                         style = MaterialTheme.typography.body1
                     )
@@ -215,13 +226,16 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
                 shape = MaterialTheme.shapes.small,
                 readOnly = true,
                 trailingIcon = {
-                    Icon(imageVector = Icons.Rounded.Notifications, contentDescription = "icon")
+                    Icon(
+                        imageVector = Icons.Rounded.Notifications,
+                        contentDescription = "icon",
+                        tint = if (!isSet) Gray else Orange
+                    )
                 },
             )
             Box(modifier = Modifier
                 .fillMaxSize()
                 .clickable {
-                    Log.d("ReminderControl", "onClick")
                     onClick()
                 }) {
             }
@@ -229,7 +243,9 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
     }
 
     @Composable
-    fun SaveButton() {
+    fun SaveButton(
+        enabled: Boolean?
+    ) {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Bottom
@@ -247,7 +263,7 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
                     contentColor = White,
                     disabledBackgroundColor = LightPurple
                 ),
-                enabled = false
+                enabled = enabled ?: false
             ) {
                 Text(
                     text = stringResource(id = R.string.new_reminder_save_text),

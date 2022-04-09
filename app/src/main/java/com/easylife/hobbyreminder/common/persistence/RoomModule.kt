@@ -1,6 +1,8 @@
 package com.easylife.hobbyreminder.common.persistence
 
 import androidx.room.Room
+import com.easylife.hobbyreminder.common.persistence.converters.DayTypeConverter
+import com.easylife.hobbyreminder.common.persistence.converters.TimeTypeConverter
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
@@ -16,7 +18,6 @@ val roomModule = module {
             "Reminder.db")
             .fallbackToDestructiveMigration()
             .addCallback(RoomCallback)
-            //.addTypeConverter(get<RecordListTypeConverter>())
             .build()
     }
 }

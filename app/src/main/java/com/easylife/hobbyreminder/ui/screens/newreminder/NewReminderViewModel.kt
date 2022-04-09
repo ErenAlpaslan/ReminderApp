@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.easylife.hobbyreminder.base.BaseViewModel
 import com.easylife.hobbyreminder.common.persistence.ReminderResult
+import com.easylife.hobbyreminder.entity.ReminderConfig
 import com.easylife.hobbyreminder.entity.ThemeEntity
 import com.easylife.hobbyreminder.ui.repository.ThemeRepository
 import kotlinx.coroutines.flow.collect
@@ -18,13 +19,23 @@ class NewReminderViewModel(
     private val _themes: MutableLiveData<List<ThemeEntity>?> = MutableLiveData()
     val themes: LiveData<List<ThemeEntity>?> = _themes
 
-    private val title: MutableLiveData<String> = MutableLiveData()
+    private val _title: MutableLiveData<String?> = MutableLiveData()
+    val title: LiveData<String?> = _title
 
-    private val _isSaveEnabled: MutableLiveData<Boolean> = MutableLiveData()
+    private val _isSaveEnabled: MutableLiveData<Boolean> = MutableLiveData(false)
     val isSaveEnabled: LiveData<Boolean> = _isSaveEnabled
 
-    fun onTitleChanged(title: String?) {
-        this.title.postValue(title)
+    private val _reminderConfig: MutableLiveData<ReminderConfig> = MutableLiveData()
+
+    private val _isReminderSettingUp: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isReminderSettingUp: LiveData<Boolean> = _isReminderSettingUp
+
+    fun onTitleChanged(text: String?) {
+        _title.value = text
+        if (_reminderConfig.value != null) {
+            _reminderConfig.value?.title = text
+        }
+        controlFields()
     }
 
     fun getThemes() {
@@ -40,4 +51,23 @@ class NewReminderViewModel(
         }
     }
 
+    fun onReminderConfigChanged(reminderConfig: ReminderConfig) {
+        _reminderConfig.value = reminderConfig
+        if (_reminderConfig.value != null) {
+            _isReminderSettingUp.postValue(true)
+        }
+        controlFields()
+    }
+
+    private fun controlFields() {
+        viewModelScope.launch {
+            if (!title.value.isNullOrEmpty() && _reminderConfig.value != null) {
+                _isSaveEnabled.postValue(true)
+            }
+        }
+    }
+
+    private fun save() {
+
+    }
 }
