@@ -1,20 +1,19 @@
 package com.easylife.hobbyreminder.ui.screens.newreminder
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.easylife.hobbyreminder.R
 import com.easylife.hobbyreminder.base.BaseViewModel
 import com.easylife.hobbyreminder.common.persistence.ReminderResult
 import com.easylife.hobbyreminder.entity.ReminderConfig
 import com.easylife.hobbyreminder.entity.ThemeEntity
-import com.easylife.hobbyreminder.ui.repository.ThemeRepository
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class NewReminderViewModel(
-    private val themeRepository: ThemeRepository
-): BaseViewModel() {
+    private val themeRepository: ThemeRepository,
+    private val reminderRepository: ReminderRepository
+) : BaseViewModel() {
 
     private val _themes: MutableLiveData<List<ThemeEntity>?> = MutableLiveData()
     val themes: LiveData<List<ThemeEntity>?> = _themes
@@ -26,9 +25,18 @@ class NewReminderViewModel(
     val isSaveEnabled: LiveData<Boolean> = _isSaveEnabled
 
     private val _reminderConfig: MutableLiveData<ReminderConfig> = MutableLiveData()
+    private val _selectedTheme: MutableLiveData<ThemeEntity> = MutableLiveData(
+        ThemeEntity(
+            id = 0,
+            color = R.color.red_a100
+        )
+    )
 
     private val _isReminderSettingUp: MutableLiveData<Boolean> = MutableLiveData(false)
     val isReminderSettingUp: LiveData<Boolean> = _isReminderSettingUp
+
+    private val _onSaveSucceeded: MutableLiveData<Boolean> = MutableLiveData(false)
+    val onSaveSucceeded: LiveData<Boolean> = _onSaveSucceeded
 
     fun onTitleChanged(text: String?) {
         _title.value = text
@@ -67,7 +75,23 @@ class NewReminderViewModel(
         }
     }
 
-    private fun save() {
+    fun onThemeSelected(theme: ThemeEntity) {
+        _selectedTheme.value = theme
+    }
 
+    fun onSaveClicked() {
+        viewModelScope.launch {
+            _reminderConfig.value?.theme = _selectedTheme.value
+            _reminderConfig.value?.let {
+                reminderRepository.insertNewReminder(it).collect { result ->
+                    when (result) {
+                        is ReminderResult.Error -> _error.postValue(result.message)
+                        is ReminderResult.Success -> {
+                            _onSaveSucceeded.postValue(true)
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.easylife.hobbyreminder.ui.repository
+package com.easylife.hobbyreminder.ui.screens.newreminder
 
 import com.easylife.hobbyreminder.common.persistence.ReminderResult
 import com.easylife.hobbyreminder.common.persistence.dao.ThemeDao

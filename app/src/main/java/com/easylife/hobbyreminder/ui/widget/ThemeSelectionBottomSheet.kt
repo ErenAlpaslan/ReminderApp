@@ -32,6 +32,7 @@ import kotlinx.coroutines.launch
 fun ThemeSelectionBottomSheet(
     bottomSheetState: BottomSheetScaffoldState,
     list: List<ThemeEntity>?,
+    selectedTheme: (ThemeEntity) -> Unit,
     content: @Composable () -> Unit
 ){
     val selectedPos = remember {
@@ -71,6 +72,7 @@ fun ThemeSelectionBottomSheet(
                                 theme = item,
                                 selected = index == selectedPos.value
                             ) { position, theme ->
+                                selectedTheme(theme)
                                 selectedPos.value = position
                             }
                         }
@@ -94,8 +96,6 @@ fun ThemeCard(
     selected: Boolean,
     onSelected: (pos: Int, theme: ThemeEntity) -> Unit
 ) {
-    Log.d("Themes", "Theme =>$theme")
-
     Column(
         modifier = Modifier
             .padding(

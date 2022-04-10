@@ -5,20 +5,24 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.easylife.hobbyreminder.BuildConfig
 import com.easylife.hobbyreminder.common.persistence.converters.DayTypeConverter
+import com.easylife.hobbyreminder.common.persistence.converters.ThemeTypeConverter
 import com.easylife.hobbyreminder.common.persistence.converters.TimeTypeConverter
 import com.easylife.hobbyreminder.common.persistence.dao.ReminderDao
 import com.easylife.hobbyreminder.common.persistence.dao.ThemeDao
+import com.easylife.hobbyreminder.entity.ReminderConfig
 import com.easylife.hobbyreminder.entity.ThemeEntity
 
 @Database(
     entities = [
-        ThemeEntity::class
+        ThemeEntity::class,
+        ReminderConfig::class
     ],
     version = BuildConfig.VERSION_CODE
 )
 @TypeConverters(
     TimeTypeConverter::class,
-    DayTypeConverter::class
+    DayTypeConverter::class,
+    ThemeTypeConverter::class
 )
 abstract class AppDatabase : RoomDatabase() {
 

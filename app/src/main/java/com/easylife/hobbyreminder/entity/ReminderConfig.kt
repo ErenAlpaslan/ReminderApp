@@ -10,5 +10,6 @@ data class ReminderConfig(
     var title: String?,
     val days: List<Day>,
     val time: Time,
-    val repeatOption: Int
+    val repeatOption: Int,
+    var theme: ThemeEntity? = null
 )

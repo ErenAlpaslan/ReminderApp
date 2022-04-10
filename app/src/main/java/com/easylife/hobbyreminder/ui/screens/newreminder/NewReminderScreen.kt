@@ -57,13 +57,20 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
         val isSaveEnabled by viewModel.isSaveEnabled.observeAsState()
         val isReminderSettingUp by viewModel.isReminderSettingUp.observeAsState()
         val title by viewModel.title.observeAsState()
+        val onSaveSucceeded by viewModel.onSaveSucceeded.observeAsState()
+        if (onSaveSucceeded == true) {
+            navController.popBackStack()
+        }
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             content = {
                 ThemeSelectionBottomSheet(
                     bottomSheetState = themeSelectionBottomSheetState,
-                    list = themes
+                    list = themes,
+                    selectedTheme = {
+                        viewModel.onThemeSelected(it)
+                    }
                 ) {
                     Column(
                         modifier = Modifier
@@ -252,7 +259,7 @@ class NewReminderScreen : BaseScreen<NewReminderViewModel>() {
         ) {
             Button(
                 onClick = {
-                    /* TODO open theme selection bottom sheet */
+                    viewModel.onSaveClicked()
                 },
                 modifier = Modifier
                     .padding(bottom = 56.dp, start = 16.dp, end = 16.dp)
